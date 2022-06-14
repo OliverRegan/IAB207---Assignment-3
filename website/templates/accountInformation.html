@@ -1,0 +1,179 @@
+{% extends "layout.html" %}
+{% block content %}
+
+<!-- Content Section -->
+<section class="h60">
+    <div class="container">
+        <div class="card m-5">
+            <div class="card-body">
+                <div class="card-title">
+                    <h3>Account Information</h3>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 my-2">
+                        <label for="email">Email:</label>
+                        <div class="lead" name="email">exampleName@gmail.com</div>
+                    </div>
+                    <div class="col-md-6 my-2">
+                        <label for="dateJoined">Date Joined:</label>
+                        <div class="lead" for="dateJoined">06/07/2021</div>
+                    </div>
+                    <div class="col-md-6 my-2">
+                        <label for="eventsBooked">Events Booked:</label>
+                        <div class="lead" for="dateJoined">3</div>
+                    </div>
+                    <div class="col-md-6 my-2">
+                        <label for="favoriteTypeOfEvent">Most Common Event:</label>
+                        <div class="lead" for="dateJoined">Dungeons and Dragons</div>
+                    </div>
+
+                </div>
+                <hr>
+                <div class="card-title">
+                    <h4>Payment Details</h4>
+                </div>
+                <hr>
+                <div class="row">
+                    <div class="col-md-6 my-2">
+                        <label for="name">Name:</label>
+                        <div class="lead" name="name">Oliver Regan</div>
+                    </div>
+                    <div class="col-md-6 my-2">
+                        <label for="address">Address:</label>
+                        <div class="lead" name="address">31 Fickle Ave, Frogs Hollow, QLD, 4000</div>
+                    </div>
+                    <div class="col-md-6 my-2">
+                        <label for="type">Payment Type:</label>
+                        <div class="lead" name="type">Visa/Mastercard</div>
+                    </div>
+                    <div class="col-md-6 my-2">
+                        <label for="details">Details:</label>
+                        <div class="lead" name="details">Card ending in: <span
+                                class="text-primary font-weight-bold">9907</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card m-5">
+            <div class="card-body">
+                <div class="card-title">
+                    <h3>Booking History</h3>
+                </div>
+                <hr>
+                <ul class="list-group">
+                    <li class="list-group-item">
+                        <div class="row justify-content-around">
+                            <div class="col-lg-2">
+                                <img src="./img/Dice.jpg" alt="Dice" class="img-fluid rounded-custom my-4">
+                            </div>
+                            <div class="col-lg-8">
+                                <h4 class="mt-3">Dungeons and Dragons Beginners Session</h4>
+                                <div class="row justify-content-around my-4">
+                                    <div class="col-lg-6 my-1">
+                                        <label>Date Booked:</label>
+                                        <div class="lead">02/05/2022</div>
+                                    </div>
+                                    <div class="col-lg-6 my-1">
+                                        <label>Date of Event:</label>
+                                        <div class="lead">04/06/2022</div>
+                                    </div>
+                                    <div class="col-lg-6 my-1">
+                                        <label>Price:</label>
+                                        <div class="lead">
+                                            $15.00
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 my-1">
+                                        <label>Type:</label>
+                                        <div class="lead">
+                                            Dungeons and Dragons
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-dark btn-block w-75" href="#">
+                                    View Event Page
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+
+                    <li class="list-group-item">
+                        <div class="row justify-content-around">
+                            <div class="col-lg-2">
+                                <img src="./img/BoardGame.jpg" alt="Dice" class="img-fluid rounded-custom my-4">
+                            </div>
+                            <div class="col-lg-8">
+                                <h4 class="mt-3">Competition Monopoly Night</h4>
+                                <div class="row justify-content-around my-4">
+                                    <div class="col-lg-6 my-1">
+                                        <label>Date Booked:</label>
+                                        <div class="lead">02/01/2022</div>
+                                    </div>
+                                    <div class="col-lg-6 my-1">
+                                        <label>Date of Event:</label>
+                                        <div class="lead">04/02/2022</div>
+                                    </div>
+                                    <div class="col-lg-6 my-1">
+                                        <label>Price:</label>
+                                        <div class="lead">
+                                            $50.00
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 my-1">
+                                        <label>Type:</label>
+                                        <div class="lead">
+                                            Board Games
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-dark btn-block w-75" href="#">
+                                    View Event Page
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="list-group-item">
+                        <div class="row justify-content-around">
+                            <div class="col-lg-2">
+                                <img src="./img/Dice.jpg" alt="Dice" class="img-fluid rounded-custom my-4">
+                            </div>
+                            <div class="col-lg-8">
+                                <h4 class="mt-3">Dungeons and Dragons Beginners Session</h4>
+                                <div class="row justify-content-around my-4">
+                                    <div class="col-lg-6 my-1">
+                                        <label>Date Booked:</label>
+                                        <div class="lead">02/06/2021</div>
+                                    </div>
+                                    <div class="col-lg-6 my-1">
+                                        <label>Date of Event:</label>
+                                        <div class="lead">04/07/2021</div>
+                                    </div>
+                                    <div class="col-lg-6 my-1">
+                                        <label>Price:</label>
+                                        <div class="lead">
+                                            $10.00
+                                        </div>
+                                    </div>
+                                    <div class="col-lg-6 my-1">
+                                        <label>Type:</label>
+                                        <div class="lead">
+                                            Dungeons and Dragons
+                                        </div>
+                                    </div>
+                                </div>
+                                <button class="btn btn-dark btn-block w-75">
+                                    View Event Page
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </div>
+
+</section>
+{% endblock %}

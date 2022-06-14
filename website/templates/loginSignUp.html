@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
+{% block content %}
+<!-- Form for logging in and signing up -->
+<section class="h60 bg-light">
+    <form method="POST" action='' enctype="multipart/form-data">
+        {{ form.csrf_token }}
+        <h2 class="text-center m-4">Enter your event details below:</h2>
+        <div class="row justify-content-around mt-4">
+            <div class="col-md-8 w-75 my-5">
+                <div class="card">
+                    <div class="card-body">
+
+
+                        <div class="form-group">
+                            <div class="row justify-content-between my-2">
+
+                            </div>
+                            <div class="row justify-content-between my-2">
+
+                            </div>
+                            <div class="row justify-content-between my-2">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </form>
+</section>
+{% endblock %}

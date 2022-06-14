@@ -2,6 +2,7 @@
 :root {
     --main-light: #f6f6f6;
     --main-dark: #333;
+    --highlight: slategray;
 }
 
 /* Whole doc styling */
@@ -21,6 +22,14 @@ html {
     font-size: 2rem;
     transition: 200ms ease-in-out;
     color: var(--main-dark);
+    cursor: pointer;
+
+}
+
+.nav-link-custom:hover {
+    font-size: 2rem;
+    transition: 200ms ease-in-out;
+    color: coral;
     cursor: pointer;
 
 }
@@ -54,7 +63,7 @@ html {
 
 /* Showcase */
 #showcase {
-    background-image: url("../img/DNDDiceBag.jpg");
+    background-image: url("/static/img/DNDDiceBag.jpg");
     background-size: cover;
     box-shadow: inset 0 0 0 2000px rgba(255, 255, 255, 0.6);
     height: 70vh;
