@@ -2,8 +2,8 @@
 from re import I
 from tokenize import Number
 from flask_wtf import FlaskForm
-from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, SelectField, IntegerField, TimeField
-from wtforms.validators import InputRequired, Length, EqualTo, Email
+from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, SelectField, IntegerField, TimeField, DateField
+from wtforms.validators import InputRequired, Length, EqualTo, Email, ValidationError, DataRequired, NumberRange
 from werkzeug.datastructures import *
 from flask_wtf.file import FileRequired, FileField, FileAllowed
 
@@ -30,9 +30,9 @@ class RegisterForm(FlaskForm):
     contact = IntegerField("Contact Number", validators=[InputRequired()])
 
     # linking two fields - password should be equal to data entered in confirm
-    password = PasswordField("Password", validators=[InputRequired(),
-                                                     EqualTo('confirm', message="Passwords should match")])
-    confirm = PasswordField("Confirm Password", validators=[])
+    password = PasswordField("Password", validators=[InputRequired()])
+    confirm = PasswordField("Confirm Password", validators=[DataRequired('*Required'),
+                            EqualTo('password', message="Passwords should match")])
 
     # submit button
     submit = SubmitField("Register")
@@ -79,7 +79,7 @@ class EventForm(FlaskForm):
     description = TextAreaField(
         "Event Description", validators=[InputRequired()])
     tickets = IntegerField("Number of Tickets", validators=[
-                           InputRequired("If you aren't selling tickets, just say 0")])
+                           InputRequired("If you aren't selling tickets, just say 0"), NumberRange(min=1, max=10000)])
     status = SelectField("Status", choices=statusTypes,
                          validators=[InputRequired('')])
     image = FileField('Upload Event Image...', validators=[FileRequired(message="Please enter a file"),
@@ -87,3 +87,12 @@ class EventForm(FlaskForm):
     # Creator not needed as that will be drawn from the session
 
     submit = SubmitField("Create Event")
+
+
+class OrderForm(FlaskForm):
+
+    # order ID is left null and autoincremented
+    # amount of tickets
+    numTickets = IntegerField(
+        "Number of tickets", validators=[InputRequired()])
+    submit = SubmitField('Book now')

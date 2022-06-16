@@ -3,7 +3,7 @@
 {% block content %}
 <!-- Form for logging in and signing up -->
 <section class="h60 bg-light">
-    <form method="POST" action='' enctype="multipart/form-data" novalidate>
+    <form method="POST" action='' enctype="multipart/form-data">
         {{ form.csrf_token }}
         <h2 class="text-center m-4">
             {% if pageType == "/auth/register" %}
@@ -30,6 +30,11 @@
                                 {% endif %}
                                 {% endwith %}
                             </div>
+                            <div class="invalid-feedback">
+                                {% for field, errors in form.errors.items() %}
+                                {{ ', '.join(errors) }}
+                                {% endfor %}
+                            </div>
                             <div class="my-2">
                                 {{form.user_name.label}}
                                 {{form.user_name(class_="form-control")}}
@@ -52,11 +57,6 @@
                                 {{form.contact(class_="form-control")}}
                             </div>
                             {% endif %}
-                            <div class="invalid-feedback">
-                                {% for error in form.password.errors %}
-                                <span>{{ error }}</span>
-                                {% endfor %}
-                            </div>
                             <div class="my-2">
                                 {{form.password.label}}
                                 {{form.password(class_="form-control")}}
@@ -70,6 +70,14 @@
                             <div class="my-2">
                                 {{form.submit(class_="form-control btn btn-success")}}
                             </div>
+                            {% if pageType == "/auth/login" %}
+                            <div class="my-2 text-center">
+                                <p>Are you new here? <br><a href="{{url_for('auth.register')}}" class="nav-link">Click
+                                        here
+                                        to
+                                        register</a></p>
+                            </div>
+                            {% endif %}
                         </div>
                     </div>
                 </div>

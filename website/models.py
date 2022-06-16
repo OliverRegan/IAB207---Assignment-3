@@ -1,9 +1,13 @@
 import email
+import statistics
+from statistics import mode
 from flask_wtf import FlaskForm
 from wtforms import *
 from flask_sqlalchemy import SQLAlchemy
 from . import db
 from flask_login import UserMixin
+from datetime import *
+from collections import Counter
 
 
 class user(db.Model, UserMixin):
@@ -18,13 +22,34 @@ class user(db.Model, UserMixin):
 
     contact = db.Column(db.Integer, nullable=False)
 
-    password_hash = db.Column(db.String(255), nullable=False)
+    password_hash = db.Column(db.String(500), nullable=False)
 
     # Relationship
-    createdEvents = db.relationship('event', backref='created')
+    createdEvents = db.relationship('event', backref='createdBy')
+
+    bookedEvents = db.relationship('order', backref='bookedEvents')
+
+    def getFavorite(self):
+        events = self.bookedEvents
+        eventTypes = []
+
+        # get event types
+        for event in events:
+            eventTypes.append(event.gameType)
+
+        if eventTypes == []:
+            return "No favorite yet"
+
+        favoriteEvent = mode(Counter(eventTypes))
+
+        print(favoriteEvent)
+
+        return 44
+
+    favoriteEvent = getFavorite
 
     def __repr__(self):
-        return "<Name: {}>".format(self.name)
+        return "<Name: {}>".format(self.user_name)
 
 
 class event(db.Model):
@@ -52,8 +77,18 @@ class event(db.Model):
     imagePath = db.Column(db.String(255))
 
     # add image to this
-
+    bookings = db.relationship('order', backref='orders')
     # Relationships
 
     def __repr__(self):
         return "<Name: {}, id: {}>".format(self.eventName, self.id)
+
+
+class order(db.Model):
+    __tablename__ = 'orders'
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    amountTickets = db.Column(db.Integer)
+    eventId = db.Column(db.Integer, db.ForeignKey(
+        event.id), autoincrement=True)
+    booked_at = db.Column(db.DateTime, default=(datetime.now()))
+    userId = db.Column(db.Integer, db.ForeignKey(user.id), index=True)

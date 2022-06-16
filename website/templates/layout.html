@@ -41,18 +41,26 @@
                 <div class="col-lg-2 w-75">
                     <a href="/accountInformation" class="nav-link-custom-light">Account Information</a>
                 </div>
+                {% if current_user.is_authenticated %}
+                <div class="col-lg-2 w-75">
+                    <a href="/auth/logout" class="nav-link-custom-light">Logout</a>
+                </div>
+                {% else %}
                 <div class="col-lg-2 w-75">
                     <a href="/auth/login" class="nav-link-custom-light">Login</a>
                 </div>
                 <div class="col-lg-2 w-75">
                     <a href="/auth/register" class="nav-link-custom-light">Register</a>
                 </div>
+                {% endif %}
             </div>
-
-
         </nav>
-
     </div>
+    {% if current_user.is_authenticated %}
+    <div class="bg-secondary text-light text-center">
+        <p class="p-0 m-0 h3">Welcome {{current_user.user_name}}!</p>
+    </div>
+    {% endif %}
 
     {% block content %}{% endblock %}
 

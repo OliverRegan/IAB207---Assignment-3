@@ -1,4 +1,5 @@
 from flask import Blueprint, render_template, redirect, url_for, request, flash
+from flask_login import current_user, login_required
 from .models import *
 from .auth import checkFile
 from . import db
@@ -52,6 +53,7 @@ def index():
 
 # Create event route
 @main.route('/createEvent', methods=['GET', 'POST'])
+@login_required
 def createEvent():
 
     # Check user is signed in here to proceed
@@ -80,12 +82,17 @@ def createEvent():
             db.session.commit()
             message = 'Event successfully created'
             flash(message, 'list-group-item-success')
-            # Return template
-            return redirect(url_for('main.createEvent'))
+
     return render_template('eventCreation.html', form=form)
 
 
 @main.route('/events/<id>', methods=['GET'])
 def events(id):
-
     return render_template('eventDetails.html')
+
+
+@main.route('/accountInformation')
+@login_required
+def accountInformation():
+
+    return render_template('accountInformation.html')

@@ -33,10 +33,13 @@ def create_app():
     # set the name of the login function that lets user login
     # in our case it is auth.login (blueprintname.viewfunction name)
     login_manager.login_view = 'auth.login'
+    login_manager.login_message = 'You Must Login to Access This Page!'
+    login_manager.login_message_category = 'list-group-item-danger'
     login_manager.init_app(app)
 
     # create a user loader function takes userid and returns User
-    # from .models import User  # importing here to avoid circular references
+    from .models import user  # importing here to avoid circular references
+
     @login_manager.user_loader
     def load_user(user_id):
         from .models import user

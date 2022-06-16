@@ -16,99 +16,97 @@ authBP = Blueprint('auth', __name__, url_prefix='/auth')
 
 
 @authBP.route('/login', methods=['GET', 'POST'])
-@authBP.route('/register', methods=['GET', 'POST'])
-def loginRegister():
-
-    #  Init form and assign to either be register or login
-    form = None
-    if request.path == '/auth/login':
-        form = LoginForm()
-    elif request.path == '/auth/register':
-        form = RegisterForm()
-
-    # Check submission and resulting function it based onrequest path (login or register)
+def login():
+    form = LoginForm()
     if form.is_submitted():
-        if request.path == '/auth/register':
+        print('In Login View function')
+        error = None
+        if(form.validate_on_submit() == True):
+            user_name = form.user_name.data
+            password = form.password.data
+            u1 = user.query.filter_by(user_name=user_name).first()
+            if u1 is None:
+                error = 'Incorrect user name'
+            # takes the hash and password
+            elif not check_password_hash(u1.password_hash, password):
+                error = 'Incorrect password'
 
-            # Assign form details to new user fields
-            newUser = user()
-            newUser.user_name = form.user_name.data
-            newUser.email_id = form.email_id.data
-            newUser.password_hash = form.confirm.data
+            if error is None:
+                login_user(u1)
+                # this gives the url from where the login page was accessed
+                nextp = request.args.get('next')
+                print(nextp)
+                if nextp is None or not nextp.startswith('/'):
+                    return redirect(url_for('main.index'))
+                return redirect(nextp)
+            else:
+                flash(error, 'list-group-item-danger')
+        return render_template('loginSignUp.html', form=form, pageType=request.path)
+    return render_template('loginSignUp.html', form=form, pageType=request.path)
 
-            # Check user doesn't already exist and proceed
-            if checkExists(newUser.user_name, user) == False:
+
+@authBP.route('/register', methods=['GET', 'POST'])
+def register():
+
+    form = RegisterForm()
+
+    if form.is_submitted():
+        print('test1')
+        # Assign form details to new user fields
+        newUser = user()
+
+        # get password data before hashing
+        password = form.confirm.data
+        password_hash = generate_password_hash(password)
+        print(password_hash)
+
+        newUser.user_name = form.user_name.data
+        newUser.email_id = form.email_id.data
+        newUser.password_hash = password_hash
+        newUser.address = form.address.data
+        newUser.contact = form.contact.data
+
+        # For checking passwords match
+        password = form.password.data
+        passwordCheck = form.confirm.data
+
+        # Check user doesn't already exist and proceed
+        if checkExists(newUser.user_name, user) == False:
+            print('test2')
+            # Check passwords match
+            if password == passwordCheck:
                 print(newUser.user_name)
                 db.session.add(newUser)
                 db.session.commit()
                 flash("You've successfully registered!",
                       'list-group-item-success')
-            # Return error
-            elif checkExists(newUser.user_name, user) == True:
-                print(True)
-                error = 'Username already exists'
-                flash(error, 'list-group-item-danger')
-
-        elif request.path == '/auth/login':
-            print('In Login View function')
-            error = None
-            if(form.validate_on_submit() == True):
-                user_name = form.user_name.data
-                password = form.password.data
-                u1 = user.query.filter_by(name=user_name).first()
-                if u1 is None:
-                    error = 'Incorrect user name'
-                # takes the hash and password
-                elif not check_password_hash(u1.password_hash, password):
-                    error = 'Incorrect password'
-                if error is None:
-                    login_user(u1)
-                    # this gives the url from where the login page was accessed
-                    nextp = request.args.get('next')
-                    print(nextp)
-                    if next is None or not nextp.startswith('/'):
-                        return redirect(url_for('index'))
-                    return redirect(nextp)
-                else:
-                    flash(error)
-            return render_template('loginSignUp.html', form=form, pageType=request.path)
+                return render_template('loginSignUp.html', form=form, pageType=request.path)
+            else:
+                print('test3')
+                flash("Your passwords need to match",
+                      'list-group-item-danger')
+        # Return error
+        elif checkExists(newUser.user_name, user) == True:
+            print(True)
+            error = 'Username already exists'
+            flash(error, 'list-group-item-danger')
 
     return render_template('loginSignUp.html', form=form, pageType=request.path)
+
+# Temp for testing while waiting for Isaacs version
+
+
+@authBP.route('/logout', methods=['GET', 'POST'])
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('main.index'))
 
 
 @authBP.route('/accountInformation')
 def accountInformation():
 
     return render_template('accountInformation.html')
-# this is the hint for a login function
-
-
-# @authBP.route('/login', methods=['GET', 'POST'])
-# def authenticate():  # view function
-#     print('In Login View function')
-#     login_form = LoginForm()
-#     error = None
-#     if(login_form.validate_on_submit() == True):
-#         user_name = login_form.user_name.data
-#         password = login_form.password.data
-#         u1 = user.query.filter_by(name=user_name).first()
-#         if u1 is None:
-#             error = 'Incorrect user name'
-#         # takes the hash and password
-#         elif not check_password_hash(u1.password_hash, password):
-#             error = 'Incorrect password'
-#         if error is None:
-#             login_user(u1)
-#             # this gives the url from where the login page was accessed
-#             nextp = request.args.get('next')
-#             print(nextp)
-#             if next is None or not nextp.startswith('/'):
-#                 return redirect(url_for('index'))
-#             return redirect(nextp)
-#         else:
-#             flash(error)
-#     return render_template('user.html', form=login_form, heading='Login')
-# Create image authentication function
 
 
 def checkFile(form):
@@ -130,12 +128,19 @@ def checkFile(form):
 
 def checkExists(nameToCheck, table):
     test2 = table.query.all()
+    print(test2)
     test = None
+    print('testCheck')
     if table == user:
+        print('testCheckUsers')
+        if test2 == []:
+            test = False
         for users in test2:
             if users.user_name == nameToCheck:
+                print('testCheckReturnT')
                 return True
             else:
+                print('testCheckReturnF')
                 test = False
         if test == False:
             return test
