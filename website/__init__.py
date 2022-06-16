@@ -37,9 +37,10 @@ def create_app():
 
     # create a user loader function takes userid and returns User
     # from .models import User  # importing here to avoid circular references
-    # @login_manager.user_loader
-    # def load_user(user_id):
-    #    return User.query.get(int(user_id))
+    @login_manager.user_loader
+    def load_user(user_id):
+        from .models import user
+        return user.query.get(int(user_id))
 
     # Allow image uploads
     UPLOAD_FOLDER = '/static/image'

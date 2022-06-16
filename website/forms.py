@@ -1,4 +1,5 @@
 
+from re import I
 from tokenize import Number
 from flask_wtf import FlaskForm
 from wtforms.fields import TextAreaField, SubmitField, StringField, PasswordField, SelectField, IntegerField, TimeField
@@ -24,11 +25,14 @@ class RegisterForm(FlaskForm):
                            Email("Please enter a valid email")])
 
     # add buyer/seller - check if it is a buyer or seller hint : Use RequiredIf field
+    # address and contact number
+    address = StringField("Address", validators=[InputRequired()])
+    contact = IntegerField("Contact Number", validators=[InputRequired()])
 
     # linking two fields - password should be equal to data entered in confirm
     password = PasswordField("Password", validators=[InputRequired(),
                                                      EqualTo('confirm', message="Passwords should match")])
-    confirm = PasswordField("Confirm Password")
+    confirm = PasswordField("Confirm Password", validators=[])
 
     # submit button
     submit = SubmitField("Register")
@@ -60,20 +64,24 @@ class EventForm(FlaskForm):
     ALLOWED_FILE = {'png', 'jpg', 'jpeg', 'JPG', 'PNG', 'bmp'}
 
     # Create fields
-    eventName = StringField("Event Name", validators=[InputRequired()])
+    eventName = StringField("Event Name", validators=[
+                            InputRequired()])
     gameType = SelectField("Game Type", choices=gameTypes,
                            validators=[InputRequired()])
-    price = IntegerField("Price")
+    price = IntegerField("Price", validators=[InputRequired()])
     date = StringField("Date", validators=[InputRequired()])
     startTime = StringField("Start Time", validators=[InputRequired()])
-    endTime = StringField("End Time", validators=[InputRequired()])
+    endTime = StringField("End Time")
     location = StringField("Location", validators=[InputRequired()])
-    blurb = StringField("Brief Description")
-    requirements = TextAreaField("Event Reqirements")
-    description = TextAreaField("Event Description")
-    tickets = IntegerField("Number of Tickets")
+    blurb = StringField("Brief Description", validators=[InputRequired()])
+    requirements = TextAreaField(
+        "Event Reqirements, enter NA if there is none", validators=[InputRequired()])
+    description = TextAreaField(
+        "Event Description", validators=[InputRequired()])
+    tickets = IntegerField("Number of Tickets", validators=[
+                           InputRequired("If you aren't selling tickets, just say 0")])
     status = SelectField("Status", choices=statusTypes,
-                         validators=[InputRequired()])
+                         validators=[InputRequired('')])
     image = FileField('Upload Event Image...', validators=[FileRequired(message="Please enter a file"),
                                                            FileAllowed(ALLOWED_FILE, message="Only accepts png, jpg/jpeg and bmp")])
     # Creator not needed as that will be drawn from the session

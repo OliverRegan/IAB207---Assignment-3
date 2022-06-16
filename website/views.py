@@ -1,4 +1,4 @@
-from flask import Blueprint, render_template, redirect, url_for, request
+from flask import Blueprint, render_template, redirect, url_for, request, flash
 from .models import *
 from .auth import checkFile
 from . import db
@@ -13,21 +13,26 @@ def index():
     # Import search form
     from .forms import searchForm
     form = searchForm()
+
     # Get events from database to pass data to the template
     all_events = event.query.all()
+
     # print(all_events[0].location)
     filtered_events = []
     print(form)
+
+    # Deal with form submission
     if form.is_submitted():
-        print('hello')
-        print(form.name.data)
-        print(form.gameType.data)
+
+        # Get name and type
         name = form.name.data
+
+        # Test if an event with name
         type = form.gameType.data
+
         for events in all_events:
             # Search by just category
             if type != 'All' and name == '':
-                print('test1')
                 if events.gameType == type:
                     filtered_events.append(events)
             # search by name
@@ -58,17 +63,25 @@ def createEvent():
 
     # Check form submission
     if form.validate_on_submit():
-        checkFile(form)
-        # get data
-        newEvent = event()
-        newEvent.imagePath = form.image.data.filename
-        form.populate_obj(newEvent)
-        # newEvent = event(name=form.eventName._value, gameType=form.gameType.data, price=form.price._value, date=form.date._value, location=form.location._value, startTime=form.startTime._value, endTime=form.endTime._value,
-        #                  blurb=form.blurb._value, requirements=form.requirements._value, description=form.description._value, tickets=form.tickets._value, creator='test@test.com', status='testStatus')
-        db.session.add(newEvent)
-        db.session.commit()
-        # Return template
-        return redirect(url_for('main.createEvent'))
+
+        # Before proceeding check name hasnt been taken
+        from .auth import checkExists
+        if checkExists(form.eventName.data, event) == True:
+            print('hello')
+            error = 'Name has already been used'
+            flash(error, 'list-group-item-danger')
+        else:
+            checkFile(form)
+            # get data
+            newEvent = event()
+            newEvent.imagePath = form.image.data.filename
+            form.populate_obj(newEvent)
+            db.session.add(newEvent)
+            db.session.commit()
+            message = 'Event successfully created'
+            flash(message, 'list-group-item-success')
+            # Return template
+            return redirect(url_for('main.createEvent'))
     return render_template('eventCreation.html', form=form)
 
 
