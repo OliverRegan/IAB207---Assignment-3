@@ -1,5 +1,7 @@
+from asyncio import events
 import email
 import statistics
+
 from statistics import mode
 from flask_wtf import FlaskForm
 from wtforms import *
@@ -29,24 +31,7 @@ class user(db.Model, UserMixin):
 
     bookedEvents = db.relationship('order', backref='bookedEvents')
 
-    def getFavorite(self):
-        events = self.bookedEvents
-        eventTypes = []
-
-        # get event types
-        for event in events:
-            eventTypes.append(event.gameType)
-
-        if eventTypes == []:
-            return "No favorite yet"
-
-        favoriteEvent = mode(Counter(eventTypes))
-
-        print(favoriteEvent)
-
-        return 44
-
-    favoriteEvent = getFavorite
+    favoriteEvent = None
 
     def __repr__(self):
         return "<Name: {}>".format(self.user_name)
@@ -92,3 +77,15 @@ class order(db.Model):
         event.id), autoincrement=True)
     booked_at = db.Column(db.DateTime, default=(datetime.now()))
     userId = db.Column(db.Integer, db.ForeignKey(user.id), index=True)
+
+
+class comment(db.Model):
+    __tablename__ = 'comments'
+
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    text = db.Column(db.String(400))
+    created_at = db.Column(db.DateTime, default=datetime.now())
+
+    # Foreign keys establishing the many to many relationship between user and events
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+    event_id = db.Column(db.Integer, db.ForeignKey('events.id'))

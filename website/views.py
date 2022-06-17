@@ -86,13 +86,66 @@ def createEvent():
     return render_template('eventCreation.html', form=form)
 
 
-@main.route('/events/<id>', methods=['GET'])
+@main.route('/events/<id>', methods=['GET', 'POST'])
 def events(id):
-    return render_template('eventDetails.html')
+
+    # Create form
+    from .forms import BookingForm
+    form = BookingForm()
+
+    idEvent = event.query.filter_by(id=id).first_or_404()
+
+    # Check form submission
+    if form.validate_on_submit():
+
+        if user.is_authenticated:
+
+            from .auth import checkTicketsAvailable
+
+            if checkTicketsAvailable(form.amountTickets.data, event) == True:
+
+                # Get data
+                newOrder = order(
+                    eventId=id, amountTickets=form.amountTickets.data, userId=current_user.id)
+
+                # Add and commit data to database
+                db.session.add(newOrder)
+                db.session.commit()
+
+                # Query database for order ID and remove unnecessary characters
+                orderID = str(order.query.order_by(order.id.desc()).first()).replace(
+                    '<', '').replace('>', '').replace('order', '')
+
+                # Generate confirmation message
+                flash('Successfully booked! Your Order ID is ' +
+                      orderID + '.', 'list-group-item-success')
+
+                # Redirect to order page so message displays
+                return redirect(url_for('main.events', id=id))
+
+            else:
+                flash('Sorry, this event does not have enough tickets available',
+                      'list-group-item-danger')
+
+                # Redirect to order page so message displays
+                return redirect(url_for('main.events', id=id))
+
+        else:
+            flash("Sorry, you need to be logged in to book tickets")
+
+    return render_template('eventDetails.html', form=form, clickedEvent=idEvent)
 
 
 @main.route('/accountInformation')
 @login_required
 def accountInformation():
 
-    return render_template('accountInformation.html')
+    events = event.query.join(order).filter(
+        order.userId == current_user.id).all()
+    eventTypes = []
+    for e in events:
+        eventTypes.append(e.gameType)
+
+    favorite = mode(eventTypes)
+    print(favorite)
+    return render_template('accountInformation.html', currentFavorite=favorite, events=events)

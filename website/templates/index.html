@@ -99,7 +99,7 @@
         {% for event in events %}
         <div class=" col-md-4">
             <div class="card h-100">
-                <img class="card-img-top img-fluid" src="/static/img/{{event.imagePath}}" alt="Magic cards">
+                <img class="card-img-top img-fluid" src="/static/img/{{event.imagePath}}">
                 <div class="card-body end-0">
                     <h5 class="card-title">{{event.eventName}}</h5>
 
@@ -119,7 +119,8 @@
                     <p class="col badge badge-pill badge-success w-50">{{event.status}}</p>
                     <p class="card-text">{{event.blurb}}
                     </p>
-                    <a href='/events/{{event.id|string}}' class="btn btn-dark">Book Now!</a>
+                    <a href={{url_for('main.events', id=event.id)}} class="btn btn-dark">Book
+                        Now!</a>
 
                 </div>
 

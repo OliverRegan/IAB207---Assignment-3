@@ -152,3 +152,14 @@ def checkExists(nameToCheck, table):
                 test = False
         if test == False:
             return test
+
+
+def checkTicketsAvailable(ticketsBought, table):
+    test2 = table.query.all()
+    test = None
+    if table == event:
+        for events in test2:
+            if events.tickets >= ticketsBought:
+                return True
+            else:
+                return False

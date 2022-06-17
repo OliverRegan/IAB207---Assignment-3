@@ -89,10 +89,7 @@ class EventForm(FlaskForm):
     submit = SubmitField("Create Event")
 
 
-class OrderForm(FlaskForm):
-
-    # order ID is left null and autoincremented
-    # amount of tickets
-    numTickets = IntegerField(
-        "Number of tickets", validators=[InputRequired()])
-    submit = SubmitField('Book now')
+class BookingForm(FlaskForm):
+    amountTickets = IntegerField('How Many Tickets?', validators=[
+                                 InputRequired(), NumberRange(min=1)])
+    book = SubmitField('Buy Tickets')
